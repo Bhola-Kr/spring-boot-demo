@@ -14,8 +14,10 @@ public class UserService {
 
     public UserService() {
         // Initial dummy data
-        users.add(new User(1, "John Doe", "john@example.com"));
-        users.add(new User(2, "Jane Smith", "jane@example.com"));
+        users.add(new User(1, "Bhola Kumar", "bhola.kumar@sap.com"));
+        users.add(new User(2, "Praveen Dubey", "praveen.dubey@sap.com"));
+        users.add(new User(3, "Bhanu Singh", "bhanu.singh@sap.com"));
+        users.add(new User(4, "Kuldeep Singh", "kuldeep.singh@sap.com"));
     }
 
     public List<User> getAllUsers() {
