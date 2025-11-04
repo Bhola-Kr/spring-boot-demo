@@ -6,18 +6,20 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class UserService {
 
     private final List<User> users = new ArrayList<>();
+    private final AtomicInteger idCounter = new AtomicInteger(0);
 
     public UserService() {
-        // Initial dummy data
-        users.add(new User(1, "Bhola Kumar", "bhola.kumar@sap.com"));
-        users.add(new User(2, "Praveen Dubey", "praveen.dubey@sap.com"));
-        users.add(new User(3, "Bhanu Singh", "bhanu.singh@sap.com"));
-        users.add(new User(4, "Kuldeep Singh", "kuldeep.singh@sap.com"));
+        // Initial dummy data with auto IDs
+        users.add(new User(idCounter.incrementAndGet(), "Bhola Kumar", "bhola.kumar@sap.com"));
+        users.add(new User(idCounter.incrementAndGet(), "Praveen Dubey", "praveen.dubey@sap.com"));
+        users.add(new User(idCounter.incrementAndGet(), "Bhanu Singh", "bhanu.singh@sap.com"));
+        users.add(new User(idCounter.incrementAndGet(), "Kuldeep Singh", "kuldeep.singh@sap.com"));
     }
 
     public List<User> getAllUsers() {
@@ -29,6 +31,7 @@ public class UserService {
     }
 
     public User addUser(User user) {
+        user.setId(idCounter.incrementAndGet()); // Auto-generate ID
         users.add(user);
         return user;
     }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UserWebController {
@@ -29,8 +30,9 @@ public class UserWebController {
 
     // Handle form submit for adding user
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         userService.addUser(user);
+        redirectAttributes.addFlashAttribute("successMessage", "✅ User created successfully!");
         return "redirect:/";
     }
 
@@ -43,15 +45,21 @@ public class UserWebController {
 
     // Handle update form
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable int id, @ModelAttribute("user") User user) {
+    public String updateUser(@PathVariable int id, @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         userService.updateUser(id, user);
+        redirectAttributes.addFlashAttribute("successMessage", "✅ User updated successfully!");
         return "redirect:/";
     }
 
     // Delete user
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable int id) {
-        userService.deleteUser(id);
+    public String deleteUser(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            redirectAttributes.addFlashAttribute("successMessage", "🗑️ User deleted successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "⚠️ User not found or could not be deleted!");
+        }
         return "redirect:/";
     }
 }
