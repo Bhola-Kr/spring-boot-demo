@@ -10,9 +10,9 @@
     <button id="getTokenBtn">Get FCM Token</button>
     <pre id="output"></pre>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js"></script>
+    <!-- ✅ Use compat versions (not ESM) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging-compat.js"></script>
 
     <script>
       // Your Firebase configuration
@@ -41,13 +41,24 @@
         try {
           await Notification.requestPermission();
 
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+              .register("/firebase-messaging-sw.js")
+              .then((registration) => {
+                console.log("✅ Service Worker registered:", registration);
+              })
+              .catch((err) => {
+                console.error("❌ Service Worker registration failed:", err);
+              });
+          }
+
           const token = await messaging.getToken({
             vapidKey:
               "BKzYez-haStmlAtOa1-GrHMLtWyxXQHgoVJ3iwVmahKo5fcVXl-zjDPMTjDm3upTMpcGBgJApH5dL5dSzGs86co",
           });
 
           if (token) {
-            console.log("FCM Token:", token);
+            console.log("✅ FCM Token:", token);
             output.textContent = "✅ FCM Token:\n\n" + token;
           } else {
             output.textContent = "❌ No registration token available.";

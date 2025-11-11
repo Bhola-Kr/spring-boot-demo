@@ -13,12 +13,12 @@ public class UserScheduler {
         this.userRepository = userRepository;
     }
 
-    // ✅ Runs every 10 seconds
-    @Scheduled(fixedRate = 10000)
-    public void printUserCount() {
-        long count = userRepository.count();
-        System.out.println("🕒 Total users in DB: " + count);
-    }
+    // // ✅ Runs every 10 seconds
+    // @Scheduled(fixedRate = 10000)
+    // public void printUserCount() {
+    //     long count = userRepository.count();
+    //     System.out.println("🕒 Total users in DB: " + count);
+    // }
 
     // ✅ Runs every day at midnight (example of CRON expression)
     @Scheduled(cron = "0 0 0 * * ?")

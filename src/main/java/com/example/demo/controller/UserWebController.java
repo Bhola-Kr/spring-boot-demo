@@ -14,11 +14,41 @@ public class UserWebController {
     @Autowired
     private UserService userService;
 
-    // Home page - show all users
+    // Default route -> show login page
     @GetMapping("/")
+    public String homePage() {
+        return "main";
+    }
+
+    // Show login page
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    // Show signup page
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "signup";
+    }
+
+    // Show chat page
+    @GetMapping("/chat")
+    public String chatPage() {
+        return "chat";
+    }
+
+    // Show index page (list of users)
+    @GetMapping("/index")
     public String viewHomePage(Model model) {
         model.addAttribute("users", userService.getAllUsers());
-        return "index";  // renders templates/index.html
+        return "index";
+    }
+
+    // Show FCM test page
+    @GetMapping("/fcm")
+    public String fcmPage() {
+        return "fcm-test";
     }
 
     // Show form to add user
@@ -28,17 +58,12 @@ public class UserWebController {
         return "add-user";
     }
 
-    @GetMapping("/fcm")
-    public String fcm(Model model) {
-        return "fcm-test";
-    }
-
     // Handle form submit for adding user
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         userService.addUser(user);
         redirectAttributes.addFlashAttribute("successMessage", "✅ User created successfully!");
-        return "redirect:/";
+        return "redirect:/index";
     }
 
     // Show form to edit user
@@ -53,7 +78,7 @@ public class UserWebController {
     public String updateUser(@PathVariable int id, @ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {
         userService.updateUser(id, user);
         redirectAttributes.addFlashAttribute("successMessage", "✅ User updated successfully!");
-        return "redirect:/";
+        return "redirect:/index";
     }
 
     // Delete user
@@ -65,6 +90,6 @@ public class UserWebController {
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "⚠️ User not found or could not be deleted!");
         }
-        return "redirect:/";
+        return "redirect:/index";
     }
 }

@@ -21,9 +21,14 @@ public class NotificationService {
             String response = FirebaseMessaging.getInstance().send(message);
             System.out.println("✅ Notification sent successfully: " + response);
             return response;
-        } catch (Exception e) {
+
+        } catch (FirebaseMessagingException e) {
+            System.err.println("❌ FirebaseMessagingException: " + e.getMessage());
+            System.err.println("Error Code: " + e.getErrorCode());
+            System.err.println("Cause: " + e.getCause());
             e.printStackTrace();
-            return "❌ Error sending notification: " + e.getMessage();
+            return "❌ Firebase error: " + e.getErrorCode() + " - " + e.getMessage();
         }
+
     }
 }

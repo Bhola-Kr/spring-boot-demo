@@ -23,13 +23,26 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+            .csrf(csrf -> csrf.disable())
+            // .authorizeHttpRequests(auth -> auth
+            //     // ✅ Public APIs
+            //     .requestMatchers("/api/auth/**").permitAll()
+
+            //     // ✅ Allow static files (HTML, JS, CSS, images)
+            //     .requestMatchers("/", "/index", "/add-user.html", "/edit-user.html", "/chat.html", "/css/**", "/js/**", "/images/**").permitAll()
+
+            //     // ✅ Allow WebSocket endpoint
+            //     .requestMatchers("/ws/**").permitAll()
+
+            //     // everything else needs auth
+            //     .anyRequest().authenticated()
+            // )
+            // disable session creation
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // add JWT filter
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
