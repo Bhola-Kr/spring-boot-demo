@@ -28,6 +28,11 @@ public class UserWebController {
         return "add-user";
     }
 
+    @GetMapping("/fcm")
+    public String fcm(Model model) {
+        return "fcm-test";
+    }
+
     // Handle form submit for adding user
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes) {

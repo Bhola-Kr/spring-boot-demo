@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase FCM Token Test</title>
+  </head>
+  <body>
+    <h2>Firebase FCM Token Generator</h2>
+    <button id="getTokenBtn">Get FCM Token</button>
+    <pre id="output"></pre>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js"></script>
+
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDL_qwuNdSMdlIcZTI0M6sVk1RNHl9x4Zo",
+        authDomain: "exercisesadvancernapp--hcltech.firebaseapp.com",
+        databaseURL:
+          "https://exercisesadvancernapp--hcltech-default-rtdb.firebaseio.com",
+        projectId: "exercisesadvancernapp--hcltech",
+        storageBucket: "exercisesadvancernapp--hcltech.firebasestorage.app",
+        messagingSenderId: "878401816142",
+        appId: "1:878401816142:web:47390f85f96f4241a4e51f",
+        measurementId: "G-MMLN10XB2N",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const messaging = firebase.messaging();
+
+      // DOM elements
+      const output = document.getElementById("output");
+      const button = document.getElementById("getTokenBtn");
+
+      button.addEventListener("click", async () => {
+        output.textContent = "Requesting permission...";
+        try {
+          await Notification.requestPermission();
+
+          const token = await messaging.getToken({
+            vapidKey:
+              "BKzYez-haStmlAtOa1-GrHMLtWyxXQHgoVJ3iwVmahKo5fcVXl-zjDPMTjDm3upTMpcGBgJApH5dL5dSzGs86co",
+          });
+
+          if (token) {
+            console.log("FCM Token:", token);
+            output.textContent = "✅ FCM Token:\n\n" + token;
+          } else {
+            output.textContent = "❌ No registration token available.";
+          }
+        } catch (err) {
+          console.error("Error getting token:", err);
+          output.textContent = "❌ Error getting token:\n" + err.message;
+        }
+      });
+
+      // Handle foreground messages
+      messaging.onMessage((payload) => {
+        console.log("Message received. ", payload);
+        alert("📩 New notification received:\n" + JSON.stringify(payload));
+      });
+    </script>
+  </body>
+</html>
