@@ -1,16 +1,25 @@
 package com.example.demo.model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")  // optional, to define table name
+@Table(name = "AuthUsers")  // optional, to define table name
 public class User {
-    @Id
+ @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
+
+    @NotBlank
     private String name;
+
+    @Email
+    @Column(unique = true)
     private String email;
 
+    @NotBlank
+    private String password;  // store hashed password
     public User() {}
 
     public User(int id, String name, String email) {
@@ -40,4 +49,13 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }   
+
+    public void setPassword(String password) {
+        this.password = password;
+    }   
+
 }
