@@ -4,18 +4,101 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Firebase FCM Token Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #f5f6fa;
+        color: #333;
+      }
+
+      h2 {
+        color: #2c3e50;
+      }
+
+      button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #3970e5;
+      }
+
+      pre {
+        margin-top: 20px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 🔔 Toast container */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* 🧱 Individual toast */
+      .toast {
+        background: #323232;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: fadeIn 0.4s forwards;
+      }
+
+      .toast h4 {
+        margin: 0 0 5px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .toast p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+    </style>
   </head>
   <body>
     <h2>Firebase FCM Token Generator</h2>
     <button id="getTokenBtn">Get FCM Token</button>
     <pre id="output"></pre>
 
-    <!-- ✅ Use compat versions (not ESM) -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ✅ Firebase compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging-compat.js"></script>
 
     <script>
-      // Your Firebase configuration
+      // ✅ Firebase config
       const firebaseConfig = {
         apiKey: "AIzaSyDL_qwuNdSMdlIcZTI0M6sVk1RNHl9x4Zo",
         authDomain: "exercisesadvancernapp--hcltech.firebaseapp.com",
@@ -32,24 +115,18 @@
       firebase.initializeApp(firebaseConfig);
       const messaging = firebase.messaging();
 
-      // DOM elements
       const output = document.getElementById("output");
       const button = document.getElementById("getTokenBtn");
 
+      // ✅ Register service worker and get token
       button.addEventListener("click", async () => {
         output.textContent = "Requesting permission...";
         try {
           await Notification.requestPermission();
 
           if ("serviceWorker" in navigator) {
-            navigator.serviceWorker
-              .register("/firebase-messaging-sw.js")
-              .then((registration) => {
-                console.log("✅ Service Worker registered:", registration);
-              })
-              .catch((err) => {
-                console.error("❌ Service Worker registration failed:", err);
-              });
+            await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+            console.log("✅ Service Worker registered");
           }
 
           const token = await messaging.getToken({
@@ -69,10 +146,27 @@
         }
       });
 
-      // Handle foreground messages
+      // ✅ Custom toast notification
+      function showToast(title, body) {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.innerHTML = `<h4>${title}</h4><p>${body}</p>`;
+        container.appendChild(toast);
+
+        // Auto remove after 5s
+        setTimeout(() => {
+          toast.style.animation = "fadeOut 0.5s forwards";
+          setTimeout(() => toast.remove(), 500);
+        }, 5000);
+      }
+
+      // ✅ Handle foreground FCM messages
       messaging.onMessage((payload) => {
-        console.log("Message received. ", payload);
-        alert("📩 New notification received:\n" + JSON.stringify(payload));
+        console.log("📩 Message received:", payload);
+        const title = payload.notification?.title || "Notification";
+        const body = payload.notification?.body || "You have a new message.";
+        showToast(title, body);
       });
     </script>
   </body>
