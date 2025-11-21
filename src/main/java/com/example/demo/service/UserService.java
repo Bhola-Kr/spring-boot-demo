@@ -4,6 +4,9 @@ import com.example.demo.exception.DuplicateEmailException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +37,8 @@ public class UserService {
         return user;
     }
 
-    // Add new user with duplicate email handling
+    // Get user by ID (throws exception if not found)
+    @Cacheable(value = "users", key = "#id")
     public User addUser(User user) {
         try {
             return userRepository.save(user);
@@ -63,6 +67,7 @@ public class UserService {
     }
 
     // Delete user by ID
+    @CacheEvict(value = "users", key = "#id")
     public boolean deleteUser(int id) {
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException("❌ Cannot delete. User not found with ID: " + id);

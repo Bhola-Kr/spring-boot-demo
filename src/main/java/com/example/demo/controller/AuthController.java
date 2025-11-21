@@ -1,11 +1,17 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.OperationResult;
+import com.example.demo.dto.UserOperationRequest;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -52,4 +58,38 @@ public class AuthController {
         var user = repo.findByEmail(email).orElseThrow();
         return Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName());
     }
+
+    @PostMapping("/batch/operations")
+    public List<OperationResult> batchOperations(@RequestBody List<UserOperationRequest> operations) {
+
+        List<OperationResult> results = new ArrayList<>();
+
+        for (UserOperationRequest op : operations) {
+
+            switch (op.getType()) {
+
+                case "GET_BY_ID":
+                    var user = repo.findById(op.getId());
+                    results.add(new OperationResult("GET_BY_ID", user.orElse(null)));
+                    break;
+
+                case "FILTER_BY_NAME":
+                    var filtered = repo.findByNameFilter(op.getName());
+                    results.add(new OperationResult("FILTER_BY_NAME", filtered));
+                    break;
+
+                case "GET_ALL_PAGED":
+                    var pageable = PageRequest.of(op.getPage(), op.getSize());
+                    var paged = repo.findAll(pageable);
+                    results.add(new OperationResult("GET_ALL_PAGED", paged));
+                    break;
+
+                default:
+                    results.add(new OperationResult("UNKNOWN_OPERATION", null));
+            }
+        }
+
+        return results;
+    }
+
 }
