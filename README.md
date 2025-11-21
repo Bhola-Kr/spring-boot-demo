@@ -1,6 +1,7 @@
 # 🚀 Spring Boot Demo Project
 
 A full-featured **Spring Boot** application that demonstrates:
+
 - ✅ JWT Authentication (Login & Signup)
 - ✅ User CRUD Management with Pagination
 - ✅ Firebase Push Notifications Integration
@@ -14,41 +15,46 @@ A full-featured **Spring Boot** application that demonstrates:
 
 ## 🏗️ Tech Stack
 
-| Layer | Technology |
-|-------|-------------|
-| Backend Framework | Spring Boot 3.x |
-| Security | Spring Security + JWT |
-| Database | MySQL |
+| Layer              | Technology                     |
+| ------------------ | ------------------------------ |
+| Backend Framework  | Spring Boot 3.x                |
+| Security           | Spring Security + JWT          |
+| Database           | MySQL                          |
 | Push Notifications | Firebase Cloud Messaging (FCM) |
-| Scheduler | Spring Boot `@Scheduled` |
-| Build Tool | Maven |
-| Java Version | 17+ |
+| Scheduler          | Spring Boot `@Scheduled`       |
+| Build Tool         | Maven                          |
+| Java Version       | 17+                            |
 
 ---
 
 ## ⚙️ Features Overview
 
 ### 🔐 Authentication (JWT)
+
 - Register new users (`/api/auth/signup`)
 - Login with credentials (`/api/auth/login`)
 - JWT token-based authentication and authorization
 
 ### 👥 User Management
+
 - Get all users with pagination  
   `GET /api/users?page=0&size=10`
 - Edit, Delete, and View users
 - Data validation using `@Valid`
 
 ### 🔔 Firebase Push Notifications
+
 - Integrated with **Firebase Cloud Messaging (FCM)**
 - Send notifications from backend to device tokens
 - Token retrieval via static HTML (FCM Token Generator)
 
 ### ⏰ Cron Jobs
+
 - Automated scheduled tasks using Spring’s `@Scheduled`
 - Example: Send daily summary email, clean temp data, etc.
 
 ### ⚡ Exception Handling
+
 - Centralized `@ControllerAdvice` for error responses
 - Returns clean, consistent JSON error structures
 
@@ -57,18 +63,20 @@ A full-featured **Spring Boot** application that demonstrates:
 ## 🗄️ API Endpoints
 
 ### Auth APIs
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| POST | `/api/auth/signup` | Register new user |
-| POST | `/api/auth/login` | Login and get JWT token |
+
+| Method | Endpoint           | Description             |
+| ------ | ------------------ | ----------------------- |
+| POST   | `/api/auth/signup` | Register new user       |
+| POST   | `/api/auth/login`  | Login and get JWT token |
 
 ### User APIs
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| GET | `/api/users` | Get all users (paginated) |
-| GET | `/api/users/{id}` | Get user by ID |
-| PUT | `/api/users/{id}` | Update user |
-| DELETE | `/api/users/{id}` | Delete user |
+
+| Method | Endpoint          | Description               |
+| ------ | ----------------- | ------------------------- |
+| GET    | `/api/users`      | Get all users (paginated) |
+| GET    | `/api/users/{id}` | Get user by ID            |
+| PUT    | `/api/users/{id}` | Update user               |
+| DELETE | `/api/users/{id}` | Delete user               |
 
 ---
 
@@ -90,17 +98,18 @@ src/
 │       └── static/            # Static HTML (FCM Token Page)
 └── test/
 
-````
+```
 
 ---
 
 ## 🧠 How to Run Locally
 
 ### 1️⃣ Clone the Repo
+
 ```bash
 git clone https://github.com/<your-username>/spring-boot-demo.git
 cd spring-boot-demo
-````
+```
 
 ### 2️⃣ Setup Database
 
@@ -122,9 +131,9 @@ spring:
 
 ### 3️⃣ Add Firebase Config
 
-* Download your Firebase service account JSON from Firebase Console
-* Save it locally (not in repo)
-* Set environment variable:
+- Download your Firebase service account JSON from Firebase Console
+- Save it locally (not in repo)
+- Set environment variable:
 
   ```bash
   export FIREBASE_CREDENTIALS_PATH=/path/to/firebase.json
@@ -210,8 +219,35 @@ docker run -p 8080:8080 spring-boot-demo
 
 ## 🧤 Security
 
-* Never commit your Firebase JSON or JWT secret keys.
-* Store all credentials in environment variables.
+- Never commit your Firebase JSON or JWT secret keys.
+- Store all credentials in environment variables.
+
+## 🟦 Enter Kafka Container
+
+```bash
+docker exec -it kafka bash
+```
+
+---
+
+## 🟩 Run Kafka Consumer
+
+```bash
+kafka-console-consumer \
+  --bootstrap-server localhost:9092 \
+  --topic test-topic \
+  --from-beginning
+```
+
+---
+
+## 🟨 Run Kafka Producer
+
+```bash
+kafka-console-producer \
+  --bootstrap-server localhost:9092 \
+  --topic test-topic
+```
 
 ---
 
